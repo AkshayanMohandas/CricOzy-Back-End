@@ -1,3 +1,6 @@
+# importing openCV,keras deep learning model, image preprocessing library, 
+# and numphy for work with large arrays of data
+
 import json
 import tensorflow
 import keras
@@ -31,6 +34,12 @@ try:
 except Exception as e:
     print(str(e))
 
+# This function will extract image frames in video. Which is the basic concept of CV, 
+# separate_images that takes source and dest as a argument. Before it runs this 
+# will check whether the directory exist or not. If it is there then it will remove that, 
+# If it is no directory then the function creates the directory. VideoCapture function reads 
+# the image frames and saves them as JPEG in dest directory,
+
 def seperate_images(source, dest):
 
     if os.path.exists(dest):
@@ -63,6 +72,10 @@ def seperate_images(source, dest):
     total_files = os.listdir(dest)
     print("Total shots processed:", len(total_files))
 
+    # The predictor function takes argument, that is dest images which is the 
+    # extracted data from the video and the model parameter represents to trained model. 
+    # This will give us type of cricket shot in each image in a given directory using the trained model.
+
 def predictor(dest, model):
     files = os.listdir(dest)
     base_model = load_model(model)
@@ -83,6 +96,11 @@ def predictor(dest, model):
 
     return predictions
 
+# max_performance function that takes four arguments: maximum, ana_drive, ana_legglance_flick, and ana_pullshot. 
+# This will determine the type of cricket shot that was predicted with the highest confidence by the model, and 
+# return the corresponding string label. The maximum parameter represents the index of the highest predicted class, 
+# while ana_drive, ana_legglance_flick, and ana_pullshot represents other three possible shots.
+
 def max_performance(maximum, ana_drive, ana_legglance_flick, ana_pullshot):
     max_class = ""
     if maximum == ana_drive:
@@ -96,6 +114,9 @@ def max_performance(maximum, ana_drive, ana_legglance_flick, ana_pullshot):
 
     return max_class
 
+# summarizer function takes in a list of predictions and returns a summary of the performance of the predictions 
+# in terms of the percentage of shots that belong to each of the four shots(Drive, Legglance Flick, Pullshot, Sweep) 
+# and the maximum shot the player used.
 
 def summarizer(predictions):
     drive = 0
@@ -141,12 +162,15 @@ def summarizer(predictions):
     return [ana_drive, ana_legglance_flick, ana_pullshot, ana_sweep, 
             max_class, maximum]
 
-
+# here we name player 1 and 2 which indicates the first video the player uploaded and the second video the player uploaded. 
+# Those two players data saved in different arrays. this is for comparing improvement of a player.
 
 results = {
     "Player_1" : [],
     "Player_2" : []
 }
+
+# This will generating report based on performance result of player in two occasions to go for improvement rate calculation.
 
 def analysis(results):
     Drive_dif = results['Player_2'][0] - results['Player_1'][0]
